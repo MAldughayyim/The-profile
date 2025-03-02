@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صندوق الرسائل السحري</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link href="homepage.css" rel="stylesheet">
+        
+</head>
+<body>
+    
+    <div class="particles" id="particles"></div>
+    <div class="container">
+        <div class="box" id="magicBox">
+            <div class="box-emoji" id="boxEmoji">🎁</div>
+            اضغط للمفاجأة
+        </div>
+        <div class="message" id="messageBox"></div>
+    </div>
+
+    <script>
+        const box = document.getElementById("magicBox");
+        const messageBox = document.getElementById("messageBox");
+        const boxEmoji = document.getElementById("boxEmoji");
+        const particles = document.getElementById("particles");
+
+        // إنشاء الجزيئات المتحركة في الخلفية
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement("div");
+            particle.classList.add("particle");
+            
+            // حجم عشوائي
+            const size = Math.random() * 15 + 5;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            
+            // موقع عشوائي
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${Math.random() * 100}%`;
+            
+            // سرعة عشوائية
+            const duration = Math.random() * 25 + 10;
+            particle.style.animationDuration = `${duration}s`;
+            
+            // تأخير عشوائي
+            const delay = Math.random() * 5;
+            particle.style.animationDelay = `${delay}s`;
+            
+            // شفافية عشوائية
+            particle.style.opacity = Math.random() * 0.6 + 0.2;
+            
+            particles.appendChild(particle);
+        }
+
+        const messages = [
+            "🚀 فرصة جديدة في الأفق! حان وقت الانطلاق",
+            "🎉 يوم رائع بانتظارك! استمتع بكل لحظة",
+            "💡 فكر خارج الصندوق! الإبداع لا حدود له",
+            "🔥 لا تستسلم، النجاح قريب! المثابرة هي المفتاح",
+            "🌟 كل شيء ممكن! ثق بنفسك وبقدراتك",
+            "🌈 أنت أقوى مما تظن! استمر في التقدم",
+            "🍀 الحظ يبتسم للشجعان! خذ المبادرة اليوم",
+            "🌺 الجمال يكمن في التفاصيل الصغيرة! انتبه لها",
+            "⏰ الوقت هو أثمن ما تملك! استثمره جيداً",
+            "📚 التعلم رحلة لا تنتهي! استمتع بكل خطوة"
+        ];
+
+        // رموز تعبيرية بديلة للصندوق عند الفتح
+        const boxEmojis = ["🎊", "✨", "🎇", "🎆", "💫", "⭐", "🌟"];
+
+        box.addEventListener("click", () => {
+            // إضافة تأثير الانفجار عند النقر
+            createExplosion();
+            
+            box.classList.add("open");
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            messageBox.innerHTML = randomMessage;
+            
+            // تغيير الإيموجي عند الفتح
+            const randomEmoji = boxEmojis[Math.floor(Math.random() * boxEmojis.length)];
+            boxEmoji.textContent = randomEmoji;
+
+            setTimeout(() => {
+                box.classList.remove("open");
+                // إعادة الإيموجي الأصلي
+                setTimeout(() => {
+                    boxEmoji.textContent = "🎁";
+                }, 300);
+            }, 4000); // يغلق بعد 4 ثوانٍ
+        });
+
+        // تأثير الانفجار
+        function createExplosion() {
+            const colors = ["#FF4E50", "#FC913A", "#F9D423", "#EDE574", "#E1F5C4"];
+            
+            for (let i = 0; i < 40; i++) {
+                const particle = document.createElement("div");
+                particle.style.position = "absolute";
+                particle.style.width = Math.random() * 12 + 6 + "px";
+                particle.style.height = particle.style.width;
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.borderRadius = "50%";
+                particle.style.pointerEvents = "none";
+                particle.style.zIndex = "100";
+                
+                // موقع البداية من وسط الصندوق
+                const rect = box.getBoundingClientRect();
+                const startX = rect.left + rect.width / 2;
+                const startY = rect.top + rect.height / 2;
+                
+                particle.style.left = startX + "px";
+                particle.style.top = startY + "px";
+                
+                // اتجاه عشوائي للانفجار
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 100 + 70;
+                const vx = Math.cos(angle) * speed;
+                const vy = Math.sin(angle) * speed;
+                
+                document.body.appendChild(particle);
+                
+                // حركة الجزيئات
+                let startTime = null;
+                
+                function animate(timestamp) {
+                    if (!startTime) startTime = timestamp;
+                    const elapsed = timestamp - startTime;
+                    
+                    // حساب الموقع الجديد
+                    const x = startX + vx * elapsed / 1000;
+                    const y = startY + vy * elapsed / 1000 + 0.5 * 980 * Math.pow(elapsed / 1000, 2); // إضافة تأثير الجاذبية
+                    
+                    particle.style.left = x + "px";
+                    particle.style.top = y + "px";
+                    
+                    // تلاشي الجزيئات مع الوقت
+                    particle.style.opacity = 1 - elapsed / 1000;
+                    
+                    if (elapsed < 1000) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        document.body.removeChild(particle);
+                    }
+                }
+                
+                requestAnimationFrame(animate);
+            }
+        }
+    </script>
+</body>
+</html>
